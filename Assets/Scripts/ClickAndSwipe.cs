@@ -27,20 +27,58 @@ public class ClickAndSwipe : MonoBehaviour
     {
         if (gameManager.isGameActive)
         {
-            if (Input.GetMouseButtonDown(0))
+            TouchSwipe();
+            MouseSwipe();
+        }
+    }
+
+    void TouchSwipe()
+    {
+        // Kiểm tra nếu có ít nhất một ngón tay chạm vào màn hình.
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            // Khi người dùng chạm (tap) bắt đầu.
+            if (touch.phase == TouchPhase.Began)
             {
                 swiping = true;
                 UpdateComponents();
             }
-            else if (Input.GetMouseButtonUp(0))
+            else if (touch.phase == TouchPhase.Ended)
             {
                 swiping = false;
                 UpdateComponents();
             }
             if (swiping)
             {
-                UpdateMousePosition();
+                UpdateTouchPosition();
             }
+        }
+    }
+
+    void UpdateTouchPosition()
+    {
+        Touch touch = Input.GetTouch(0);
+        // The reason we use 10.0f on the z axis, is because the camera has the z position of -10.0f.
+        mousePos = cam.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10.0f));
+        transform.position = mousePos;
+    }
+
+    void MouseSwipe()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            swiping = true;
+            UpdateComponents();
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            swiping = false;
+            UpdateComponents();
+        }
+        if (swiping)
+        {
+            UpdateMousePosition();
         }
     }
 
